@@ -5,9 +5,12 @@ import "strconv"
 
 func main(){
 	log("hello go")
-	doChange(1,2)
+	doSwap(1,2)
 	forTest()
 	testChan()
+	testVar()
+	testIota()
+	testIf()
 }
 
 func log(args ...string){
@@ -28,31 +31,32 @@ func log2(mark string, others ...int){
 }
 
 func log3(a int){
-	fmt.Println(a);
+	fmt.Println(a)
 }
 
 
-//指针
-func change(a *int, b *int){
+//指针相关
+func swap(a *int, b *int){
 	var temp int = *a
 	*a = *b
 	*b = temp
 }
 
-func doChange(x int, y int){
+func doSwap(x int, y int){
 	log2("交换前",x,y)
-	change(&x,&y)
+	swap(&x,&y)
 	log2("交换后",x,y)
 }
 
 func forTest(){
-	for i:=0;i<10;i++{
+	for i := 0;i<10;i++{
 		log3(i)
 	}
 }
 
+// channel相关
 
-func channel(c chan int){
+func worker(c chan int){
 	var i int = 0;
 	for ; i< 10 ; i++{
 		c <- i
@@ -65,7 +69,7 @@ func testChan(){
 	var c chan int = make(chan int,100) //第二个参数为缓冲区大小，带缓冲的通道,发送到缓冲区，不用等待接收方，除非缓存满了
 	//c := make(chan int) // 不带缓冲的通道,发送方会阻塞，直到接收方收到
 	//开启协程
-	go channel(c)
+	go worker(c)
 	//从通道接收一条消息
 	msg := <- c 
 	log2("来自goroutine的通道消息",msg)
@@ -74,4 +78,88 @@ func testChan(){
 		log2("来自goroutine的通道消息",data)
 	}
 	log("testChan执行完毕")
+}
+
+
+
+//定义变量相关
+func testVar(){
+	//定义一个常量
+	const a = 10
+	var (
+		b int = 123
+		c = 2
+	)
+	const (
+		d = "567"
+		e = 6
+	)
+	var f int = 1
+	var g = 2
+	var h,i,j int= 10,11,12
+	k,l,m := 13,14,"15"
+	log3(a)
+	log3(b)
+	log3(c)
+	// len计算字符串常量的长度，不可用于变量
+	log2("d的长度是：",len(d))
+	log3(e)
+
+	log3(f)
+	log3(g)
+	log3(h)
+	log3(i)
+	log3(j)
+	log3(k)
+	log3(l)
+	log(m)
+}
+
+//iota相关
+func testIota(){
+	const (
+		a = iota //iota = 0
+		b //1 iota + 1
+		c = "str" //iota + 1
+		d //str  iota + 1
+		e = iota //4
+	)
+	log3(a)
+	log3(b)
+	log(c)
+	log(d)
+	log3(e)
+}
+
+//条件相关
+func testIf(){
+	if(true){
+		log("if（ture）就打印这行")
+	}
+
+	if(false){
+
+	}else if(true){
+		log("else if（ture）就打印这行")
+	}
+
+	switch "abc"{ //或switch ("abc")
+	case "abc":
+		log("case \"abc\"就打印这行")
+		//自带break效果
+	case "def":
+		log("case\"def\"就打印这行")
+	default:
+		log("default就打印这行")
+	}
+
+	flag := "abc"
+
+	switch{
+	case flag == "abc":
+		log("case flag == \"abc\"就打印这行")
+	default:
+		log("没有匹配时的默认项")
+	}
+
 }
