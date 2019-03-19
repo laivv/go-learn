@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+	"time"
+)
+
 
 func main(){
 	log("hello go")
@@ -11,6 +15,7 @@ func main(){
 	testVar()
 	testIota()
 	testIf()
+	selectTest()
 }
 
 func log(args ...string){
@@ -144,22 +149,97 @@ func testIf(){
 	}
 
 	switch "abc"{ //或switch ("abc")
-	case "abc":
-		log("case \"abc\"就打印这行")
-		//自带break效果
-	case "def":
-		log("case\"def\"就打印这行")
-	default:
-		log("default就打印这行")
+		case "abc":
+			log("case \"abc\"就打印这行")
+			//自带break效果
+		case "def":
+			log("case\"def\"就打印这行")
+		default:
+			log("default就打印这行")
 	}
 
 	flag := "abc"
 
 	switch{
-	case flag == "abc":
-		log("case flag == \"abc\"就打印这行")
-	default:
-		log("没有匹配时的默认项")
+		case flag == "abc":
+			log("case flag == \"abc\"就打印这行")
+		default:
+			log("没有匹配时的默认项")
 	}
+
+	var s interface{};
+	switch s.(type){
+		case int :
+			log("s是int类型就打印这行")
+		case string:
+			log("s是string类型就打印这行")
+		default:
+			log("s未知类型")
+	}
+	var str string = "123"
+	//获取字符串长度
+	log3(len(str))
+
+	var m uint = 1
+	switch m{
+		case 2:
+			log("这条不会打印")
+		case 1:
+			log("这条一定会打印，在下一行用fallthrough关键字，下一个case无论是否成立都会执行")
+			fallthrough
+		case 3:
+			log("这条case不匹配也会打印，因为上一个case用了fallthrough关键字")
+		default:
+			log("这条不会打印")
+	}
+
+}
+
+
+//select相关
+
+func select_worker(c chan int){
+	for i := 0; i < 10 ; i++{
+		c <- i
+		//需要导入time包
+		time.Sleep(time.Duration(1) * time.Second)
+	}
+	close(c) //关闭通道
+}
+
+func selectTest(){
+	ch1,ch2 := make(chan int,10),make(chan int,10)
+
+	go select_worker(ch1)
+	go select_worker(ch2)
+
+	 finish1, finish2 := false ,false
+
+	//利用死循环和select的阻塞特性来接收消息
+	for (true){
+		select {
+			case r1, ok1 := (<- ch1): //(<- ch1) 同 <- ch1
+				 log2("收到ch1通道发来的消息",r1)
+				 if(!ok1){
+					finish1 = true
+					if(finish1 && finish2){
+						goto PRINT
+					}
+				 }
+			case r2, ok2 := <- ch2:
+				log2("收到ch2通道发来的消息",r2)
+				if(!ok2){
+					finish2 = true
+					if(finish1 && finish2){
+						goto PRINT
+					}
+				 }
+			// default: //如果开启default则select语句不阻塞，否则阻塞,不开启default语句则不要写死循环这种危险操作
+			// 	log("暂无消息")
+		}
+	}
+
+	PRINT:log("消息接收完毕！")
+
 
 }
