@@ -4,21 +4,53 @@ import (
 	"fmt"
 	"strconv"
 	"time"
+	"reflect"
 )
 
 
 func main(){
 	log("hello go")
 	doSwap(1,2)
-	forTest()
+	testFor()
 	testChan()
 	testVar()
 	testIota()
 	testIf()
-	selectTest()
+	testSlect()
+	testClass()
+	testScope()
+	testMultipleReturn()
+	testArray()
 }
 
-func log(args ...string){
+func typeOf(arg interface{}) string{
+	return reflect.TypeOf(arg).String()
+}
+
+func toString(arg interface{}) string{
+	ret := ""
+	if typeOf(arg) == "int" {
+		// 类型断言
+		ret = strconv.Itoa(arg.(int))
+	}
+	if typeOf(arg) == "string" {
+		// 类型断言 
+		ret = arg.(string)
+	}
+	return ret
+}
+
+
+func log(args ...interface{}){
+	str := ""
+	for _,arg := range args{
+		str += toString(arg)
+	}
+	fmt.Println(str)
+}
+
+
+func log1(args ...string){
 	str := ""
 	for _, arg := range args{
 		str += arg
@@ -42,20 +74,18 @@ func log3(a int){
 
 //指针相关
 func swap(a *int, b *int){
-	var temp int = *a
-	*a = *b
-	*b = temp
+	*a ,*b = *b , *a //交换
 }
 
 func doSwap(x int, y int){
-	log2("交换前",x,y)
+	log("交换前",x,y)
 	swap(&x,&y)
-	log2("交换后",x,y)
+	log("交换后",x,y)
 }
 
-func forTest(){
+func testFor(){
 	for i := 0;i<10;i++{
-		log3(i)
+		log(i)
 	}
 }
 
@@ -77,10 +107,10 @@ func testChan(){
 	go worker(c)
 	//从通道接收一条消息
 	msg := <- c 
-	log2("来自goroutine的通道消息",msg)
+	log("来自goroutine的通道消息",msg)
 	//遍历通道的所有消息
 	for data := range c {
-		log2("来自goroutine的通道消息",data)
+		log("来自goroutine的通道消息",data)
 	}
 	log("testChan执行完毕")
 }
@@ -103,20 +133,20 @@ func testVar(){
 	var g = 2
 	var h,i,j int= 10,11,12
 	k,l,m := 13,14,"15"
-	log3(a)
-	log3(b)
-	log3(c)
+	log(a)
+	log(b)
+	log(c)
 	// len计算字符串常量的长度，不可用于变量
-	log2("d的长度是：",len(d))
-	log3(e)
+	log("d的长度是：",len(d))
+	log(e)
 
-	log3(f)
-	log3(g)
-	log3(h)
-	log3(i)
-	log3(j)
-	log3(k)
-	log3(l)
+	log(f)
+	log(g)
+	log(h)
+	log(i)
+	log(j)
+	log(k)
+	log(l)
 	log(m)
 }
 
@@ -129,11 +159,11 @@ func testIota(){
 		d //str  iota + 1
 		e = iota //4
 	)
-	log3(a)
-	log3(b)
+	log(a)
+	log(b)
 	log(c)
 	log(d)
-	log3(e)
+	log(e)
 }
 
 //条件相关
@@ -168,6 +198,7 @@ func testIf(){
 	}
 
 	var s interface{};
+	//利用 switch进行类型判断
 	switch s.(type){
 		case int :
 			log("s是int类型就打印这行")
@@ -178,7 +209,7 @@ func testIf(){
 	}
 	var str string = "123"
 	//获取字符串长度
-	log3(len(str))
+	log(len(str))
 
 	var m uint = 1
 	switch m{
@@ -207,7 +238,7 @@ func select_worker(c chan int){
 	close(c) //关闭通道
 }
 
-func selectTest(){
+func testSlect(){
 	ch1,ch2 := make(chan int,10),make(chan int,10)
 
 	go select_worker(ch1)
@@ -216,10 +247,10 @@ func selectTest(){
 	 finish1, finish2 := false ,false
 
 	//利用死循环和select的阻塞特性来接收消息
-	for (true){
+	for true{
 		select {
 			case r1, ok1 := (<- ch1): //(<- ch1) 同 <- ch1
-				 log2("收到ch1通道发来的消息",r1)
+				 log("收到ch1通道发来的消息",r1)
 				 if(!ok1){
 					finish1 = true
 					if(finish1 && finish2){
@@ -227,7 +258,7 @@ func selectTest(){
 					}
 				 }
 			case r2, ok2 := <- ch2:
-				log2("收到ch2通道发来的消息",r2)
+				log("收到ch2通道发来的消息",r2)
 				if(!ok2){
 					finish2 = true
 					if(finish1 && finish2){
@@ -240,6 +271,105 @@ func selectTest(){
 	}
 
 	PRINT:log("消息接收完毕！")
+}
 
 
+//结构 类相关
+type Person struct {
+	name string
+	age int
+}
+
+func (p *Person) getName() string{
+	return p.name
+}
+
+func (p *Person) getAge() int{
+	return p.age
+}
+
+func testClass(){
+	p := Person{
+		name:"lingluo",
+		age:18 } // }不能放在下一行，否则报错
+
+	log("p.getName() 的值是:",p.getName())
+}
+
+
+// 作用域 、提升相关
+func testScope(){
+		//测试块级作用域
+		log("测试块级作用域和变量提升")
+		var a = 1
+		{
+			log(a) // 1
+			var a = 2
+			log(a) // 2
+		}
+		log(a) // 1
+		// go语言具有块级作用域 ，并且不会提升变量
+	
+		log("测试函数提升")
+	
+		// (1)
+		var myfunc = func (){ 
+			log("我是在函数体内定义的函数")
+		}
+	
+		// (2)
+		myfunc()
+	
+		// (1) (2) 不可交换位置，否则报错
+		// go语言在函数体内定义函数时，只能用变量赋值的形式，不可采用 func funcName(){}的形式
+
+		//go语言 全局函数、全局变量 有 ‘提升’的效果，可以写在main函数后面
+}
+
+
+// 多个返回值 go语言支持返回多个值
+func multipleReturn()(int,string){
+	return 1,"abc"
+}
+
+func testMultipleReturn(){
+		log("go函数支持返回多个值")
+		a,b:= multipleReturn()
+		log("返回的第一个值是",a)
+		log("返回的第二个值是",b)
+}
+
+
+
+//数组相关
+func testArray(){
+	//定义数组方式,不指定成员个数
+	var array = [...]int{1,2,3}
+	//指定成员个数
+	array2 := [4]string{"a","b","c","d"}
+
+	array3 := [2]Person{
+		Person{"lingluo",18},
+		Person{"lingluo2",19} } // 最后一个}不能换行，要报错
+
+	array4 := [...]interface{}{ //利用空接口 interface{} 放入任意类型
+		"str",
+		123,
+		Person{"lingluo",18}}
+
+	// 访问数组
+	log(array3[0].name)
+	
+	// 数组遍历，
+	for i ,len := 0,len(array2);i < len; i ++ {
+		log(array2[i])
+	}
+	// 数组遍历， range方式
+	for _,item := range array2 {
+		log(item)
+	}
+	_ = array
+	_ = array2
+	_ = array3
+	_ = array4
 }
