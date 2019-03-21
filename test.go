@@ -16,11 +16,16 @@ func main(){
 	testVar()
 	testIota()
 	testIf()
-	testSlect()
+	// testSlect()
 	testClass()
 	testScope()
 	testMultipleReturn()
 	testArray()
+	testSlice()
+	testMap()
+	testCon()
+	testNew()
+	testError()
 }
 
 func typeOf(arg interface{}) string{
@@ -372,4 +377,111 @@ func testArray(){
 	_ = array2
 	_ = array3
 	_ = array4
+}
+
+
+//切片相关 切片类似于ArrayList
+func testSlice(){
+	var arraylist []int = []int {1,2,3}
+	log("初始切片长度为，",len(arraylist))
+	arraylist = append(arraylist,1)
+	log("调用append函数后的长度为,",len(arraylist))
+	arraylist2 := make([]string ,2) //使用make函数创建切片 第二个参数2表示切片初始化长度为2
+	log("初始化长度，",len(arraylist2)) // 2
+
+	arraylist3 := make([]string,4,5) //第三个参数表示切片容量，当调用append超出容量时会自动增加容量大小
+	log("arraylist3的容量是",cap(arraylist3)) //5 cap(arr)函数计算切片的容量
+	arraylist3 = append(arraylist3,"str1") //append函往切片增加项
+	log(len(arraylist3))
+	arraylist4 := arraylist3[0:1]  //[startIndex:endIndex] 包含startIndex,不包含endIndex,startindex或endindex都可省略
+	log("通过切片获得的新切片的长度是",len(arraylist4)) // 1
+	arraylist4 = append(arraylist4,"str3") // 切片后的arraylist4也是一个切片，可以用append函数
+	
+	source := []string{"a","b"}
+	target := make([]string,len(source),len(source) * 2)
+	copy(target,source) //copy(target,source)函数将source的内容拷贝给target
+	log("target的长度是",len(target))
+
+}
+
+
+//map相关
+func testMap(){
+	myMap := map[string]int {
+		"count1":1,
+		"count2":2 }
+
+	myMap2 := make(map[string]int)
+	myMap2["count3"] = 1
+
+	var myMap3 map[string]int //以这种形式先声明map的类型在下一行还得用make函数才能使用
+	myMap3 = make(map[string]int)
+	myMap3["count4"] = 2
+
+	
+
+	log("myMap2[\"count3\"]的值是",myMap2["count3"])
+	delete(myMap,"count2") // 使用delete函数删除key
+	_,ok := myMap["count2"]
+	if(ok){
+		log("myMap[\"count2\"]的值是",myMap["count2"])
+	}else{
+		log("myMap[\"count2\"]不存在")
+	}
+
+
+}
+
+
+
+
+//类型转换
+func testCon(){
+	var a int = 1
+	b := string(a)  //语法 type(expression) 
+	log("int转换后的类型",typeOf(b))
+	var c = "123"
+	// log("string转换后的类型",typeOf(int(c))) //报错 只能在兼容的类型之间转换 如 int -> float64  int -> string
+	_ = c
+}
+
+
+//new函数
+
+type People interface{
+	eat()
+}
+
+type Boy struct{
+
+}
+
+func (p *Boy) eat(){
+	log("I am eating...")
+}
+
+func testNew(){
+	var p *int = new(int) //new(type)返回一个指针 
+	log("new（int）初始化的值是",*p) // 0
+	*p = 10 //修改指针指向地址的值
+	log("p的值是",*p)
+
+	boy := new(Boy)
+	boy.eat()
+}
+
+
+//错误处理
+func testError(){
+	defer func(){
+		log("我在异常抛出后第二执行")
+		err := recover() //使用recover函数来catch异常
+		log("捕获到错误 ，错误信息是：",err)
+	}()
+
+	defer func(){
+		log("我在异常抛出后首先执行")
+	}()
+
+	panic("使用painc抛出了一个异常,开始向上执行defer函数,defer函数结尾有一对'()'号")
 }
