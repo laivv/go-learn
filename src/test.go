@@ -483,5 +483,5 @@ func testError(){
 		log("我在异常抛出后首先执行")
 	}()
 
-	panic("使用painc抛出了一个异常,开始向上执行defer函数,defer函数结尾有一对'()'号")
+	panic("使用panic抛出了一个异常,开始向上执行defer函数,defer函数结尾有一对'()'号")
 }
