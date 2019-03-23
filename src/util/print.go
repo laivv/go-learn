@@ -1,7 +1,9 @@
-package log
+package util
 
 import (
 	"strconv"
+	"reflect"
+	"fmt"
 )
 
 
@@ -17,7 +19,7 @@ func toString(arg interface{}) string{
 		ret = strconv.Itoa(arg.(int))
 	}
 	if typeOf(arg) == "string" {
-		// 类型断言 
+		// 类型断言
 		ret = arg.(string)
 	}
 	return ret
