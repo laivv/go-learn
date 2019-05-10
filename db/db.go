@@ -5,8 +5,12 @@
     "util"
     _ "github.com/go-sql-driver/mysql"
   )
+  var dbHandle interface{} = nil
+  func GetDb() *gorm.DB{
+    if(dbHandle != nil){
+      return dbHandle.(*gorm.DB)
+    }
 
-  func Open() *gorm.DB{
     db,err := gorm.Open("mysql", "root:123456@tcp(127.0.0.1:3306)/test?charset=utf8&parseTime=True&loc=Local")
     if err == nil {
       util.Log("数据库连接失败")
@@ -14,6 +18,8 @@
       util.Log("数据库连接成功")
     }
     // defer db.Close()
-    return db
+    db.SingularTable(true)
+    dbHandle = db
+    return dbHandle.(*gorm.DB)
   }
 
