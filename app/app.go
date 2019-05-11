@@ -1,4 +1,4 @@
-package server
+package app
 
 import (
 	"strconv"
@@ -11,11 +11,11 @@ import (
 type Runable interface {
 	Run()
 }
-type Server struct {
+type App struct {
 	port int
 }
 
-func(s *Server) Run(port int){
+func(s *App) Run(port int){
 	s.port = port
 	r := gin.Default();
 	r.GET("/", home.Index)

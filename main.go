@@ -1,11 +1,11 @@
 package main
 
 import (
-	"server"
+	"app"
 )
 
 func main (){
-	Server :=	new(server.Server)
-	Server.Run(8001)
+	app :=	new(app.App)
+	app.Run(8001)
 }
 
