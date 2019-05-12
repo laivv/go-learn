@@ -21,7 +21,10 @@ func Delete (ctx *gin.Context){
 }
 
 func FindByPage(ctx *gin.Context){
-  page , _  := strconv.Atoi(ctx.Param("page"))
+  page , err  := strconv.Atoi(ctx.Param("page"))
+  if err != nil {
+    page = 1
+  }
   var size int = 10
   var offset int = (page - 1) * size
   var articles []model.Article
