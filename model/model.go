@@ -28,10 +28,25 @@ func InitDB() {
   DB = db
 }
 
-
+type Article struct {
+   ID uint
+	 Title string
+	 Content string
+	 CategoryId uint
+	 CreateDate time.Time
+	 UpdateDate time.Time
+	 DeleteDate time.Time
+	 CreateUser int
+	 VisitCount uint
+	 CommentState uint
+	 State uint
+	 Permission uint
+	 Reminder string
+	 ReminderKey string
+}
 
 type User struct {
-  ID int
+  ID uint
 	Account string
 	Password string
 	Alias string
@@ -41,6 +56,26 @@ type User struct {
 	CurrLoginDate time.Time
 	LoginCount int
 	Email string
+	State uint
+}
+
+type Search struct {
+  ID uint
+	Name string
+	Count uint
+	Type uint
+	CreateDate  time.Time
+	LastSearchDate time.Time
+}
+
+type Message struct {
+  ID uint
+	UserName string
+	Content string
+	Ipv4 string
+	Email string
+	CreateDate time.Time
+	UserType  uint
 	State uint
 }
 
