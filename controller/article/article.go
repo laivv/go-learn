@@ -19,6 +19,20 @@ func Update(ctx *gin.Context){
 }
 
 func Delete (ctx *gin.Context){
+  id , err := strconv.Atoi(ctx.Param("id"))
+  if err != nil || id < 0 {
+    ctx.JSON(404,gin.H{
+      "code":1,
+      "msg":"无效的参数：id",
+      "data":nil,
+    })
+    return
+  }
+  model.InitDB()
+  article := model.Article{
+    ID:uint(id),
+  }
+  model.DB.Delete(&article)
 
 }
 

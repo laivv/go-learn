@@ -20,7 +20,9 @@ func(s *App) Run(port int){
 	s.port = port
 	r := gin.Default();
 	r.GET("/", home.Index)
-  r.GET("/list", home.List)
   r.GET("/list/:page",article.FindByPage)
+  r.PUT("/article",article.Add)
+  r.POST("/article/:id",article.Update)
+  r.DELETE("/article/:id",article.Delete)
 	r.Run((":" + strconv.Itoa(s.port)))
 }
