@@ -10,7 +10,7 @@ import (
 
 var DB *gorm.DB
 var dbConfig = config.DBConfig
-var url string = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=True&loc=Local",dbConfig["user"], dbConfig["password"], dbConfig["host"], dbConfig["port"], dbConfig["database"], dbConfig["charset"])
+var url string = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=false&loc=Local",dbConfig["user"], dbConfig["password"], dbConfig["host"], dbConfig["port"], dbConfig["database"], dbConfig["charset"])
 
 func InitDB() {
   if DB != nil {
@@ -33,9 +33,9 @@ type Article struct {
 	 Title string `json:"title"`
 	 Content string `json:"content"`
 	 CategoryId uint `json:"categoryId"`
-	 CreateDate time.Time `gorm:"TYPE:DATETIME" json:"createDate"`
-	 UpdateDate time.Time `json:"updateDate"`
-	 DeleteDate time.Time `json:"deleteDate"`
+	 CreateDate string `gorm:"TYPE:DATETIME" json:"createDate"`
+	 UpdateDate string `json:"updateDate"`
+	 DeleteDate string `json:"deleteDate"`
 	 CreateUser int `json:"createUser"`
 	 VisitCount uint `json:"visitCount"`
 	 CommentState uint `json:"commentState"`
