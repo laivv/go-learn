@@ -3,7 +3,6 @@ package home
 import (
 	"github.com/gin-gonic/gin";
   "model"
-  "util"
   "time"
 )
 
@@ -25,7 +24,6 @@ func Index(ctx *gin.Context){
 
   model.InitDB()
   model.DB.Create(&user)
-  util.Log("写入数据库")
 	ctx.JSON(200,gin.H{
 		"code":0,
 		"msg":"成功",

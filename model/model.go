@@ -29,53 +29,53 @@ func InitDB() {
 }
 
 type Article struct {
-   ID uint
-	 Title string
-	 Content string
-	 CategoryId uint
-	 CreateDate time.Time
-	 UpdateDate time.Time
-	 DeleteDate time.Time
-	 CreateUser int
-	 VisitCount uint
-	 CommentState uint
-	 State uint
-	 Permission uint
-	 Reminder string
-	 ReminderKey string
+   ID uint `json:"id"`
+	 Title string `json:"title"`
+	 Content string `json:"content"`
+	 CategoryId uint `json:"categoryId"`
+	 CreateDate time.Time `gorm:"TYPE:DATETIME" json:"createDate"`
+	 UpdateDate time.Time `json:"updateDate"`
+	 DeleteDate time.Time `json:"deleteDate"`
+	 CreateUser int `json:"createUser"`
+	 VisitCount uint `json:"visitCount"`
+	 CommentState uint `json:"commentState"`
+	 State uint `json:"state"`
+	 Permission uint `json:"permission"`
+	 Reminder string `json:"reminder"`
+	 ReminderKey string `json:"reminderKey"`
 }
 
 type User struct {
-  ID uint
-	Account string
-	Password string
-	Alias string
-	Type uint
-	CreateDate time.Time
-	LastLoginDate  time.Time
-	CurrLoginDate time.Time
-	LoginCount int
-	Email string
-	State uint
+  ID uint `json:"id"`
+	Account string `json:"account"`
+	Password string `json:"password"`
+	Alias string `json:"alias"`
+	Type uint `json:"type"`
+	CreateDate time.Time `json:"createDate"`
+	LastLoginDate  time.Time `json:"lastLoginDate"`
+	CurrLoginDate time.Time `json:"currLoginDate"`
+	LoginCount int `json:"loginCount"`
+	Email string `json:"email"`
+	State uint `json:"state"`
 }
 
 type Search struct {
-  ID uint
-	Name string
-	Count uint
-	Type uint
-	CreateDate  time.Time
-	LastSearchDate time.Time
+  ID uint `json:"id"`
+	Name string `json:"name"`
+	Count uint `json:"count"`
+	Type uint `json:"type"`
+	CreateDate  time.Time `json:"createDate"`
+	LastSearchDate time.Time `json:"lastSearchDate"`
 }
 
 type Message struct {
-  ID uint
-	UserName string
-	Content string
-	Ipv4 string
-	Email string
-	CreateDate time.Time
-	UserType  uint
-	State uint
+  ID uint `json:"id"`
+	UserName string `json:"userName"`
+	Content string `json:"content"`
+	Ipv4 string `json:"ipv4"`
+	Email string `json:"email"`
+	CreateDate time.Time `json:"createDate"`
+	UserType  uint `json:"userType"`
+	State uint `json:"state"`
 }
 
