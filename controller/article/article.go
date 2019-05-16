@@ -1,7 +1,7 @@
 package article
 
 import (
-	"github.com/gin-gonic/gin";
+	"github.com/gin-gonic/gin"
   "model"
   "math"
   // "math/big"
@@ -21,7 +21,7 @@ func Update(ctx *gin.Context){
 func Delete (ctx *gin.Context){
   id , err := strconv.Atoi(ctx.Param("id"))
   if err != nil || id < 0 {
-    ctx.JSON(404,gin.H{
+    ctx.JSON(400,gin.H{
       "code":1,
       "msg":"无效的参数：id",
       "data":nil,
@@ -32,9 +32,52 @@ func Delete (ctx *gin.Context){
   article := model.Article{
     ID:uint(id),
   }
-  model.DB.Delete(&article)
-
+ if model.DB.Delete(&article).Error != nil {
+    ctx.JSON(400 ,gin.H{
+      "code":1,
+      "msg":"无效的参数：id",
+      "data":nil,
+    })
+ } else {
+  ctx.JSON(200 ,gin.H{
+    "code":0,
+    "msg":"成功",
+    "data":nil,
+  })
+ }
 }
+
+func FindById(ctx *gin.Context){
+  id , err  := strconv.Atoi(ctx.Param("id"))
+  if err != nil || id < 0 {
+    ctx.JSON(400,gin.H{
+      "code":1,
+      "msg":"无效的参数：id",
+      "data":nil,
+    })
+    return
+  }
+  model.InitDB()
+  article := model.Article{
+    ID:uint(id),
+  }
+  if model.DB.Find(&article).Error != nil {
+    ctx.JSON(404 ,gin.H{
+      "code":1,
+      "msg":"失败",
+      "data":nil,
+    })
+  } else {
+    ctx.JSON(200 ,gin.H{
+      "code":0,
+      "msg":"成功",
+      "data":article,
+    })
+  }
+}
+
+
+
 
 func FindByPage(ctx *gin.Context){
   page , err  := strconv.Atoi(ctx.Param("page"))

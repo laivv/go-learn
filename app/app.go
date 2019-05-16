@@ -22,6 +22,7 @@ func(s *App) Run(port int){
 	r.GET("/", home.Index)
   r.GET("/list/:page",article.FindByPage)
   r.PUT("/article",article.Add)
+  r.GET("/article/:id",article.FindById)
   r.POST("/article/:id",article.Update)
   r.DELETE("/article/:id",article.Delete)
 	r.Run((":" + strconv.Itoa(s.port)))
