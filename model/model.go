@@ -12,7 +12,7 @@ var DB *gorm.DB
 var dbConfig = config.DBConfig
 var url string = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=false&loc=Local",dbConfig["user"], dbConfig["password"], dbConfig["host"], dbConfig["port"], dbConfig["database"], dbConfig["charset"])
 
-func InitDB() {
+func init() {
   if DB != nil {
     return
   }

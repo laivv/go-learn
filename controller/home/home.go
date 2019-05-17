@@ -22,7 +22,6 @@ func Index(ctx *gin.Context){
 		State: 1,
 	}
 
-  model.InitDB()
   model.DB.Create(&user)
 	ctx.JSON(200,gin.H{
 		"code":0,

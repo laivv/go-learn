@@ -5,13 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
   "controller/home"
   "controller/article"
-	// "util"
 )
 
-
-type Runable interface {
-	Run()
-}
 type App struct {
 	port int
 }

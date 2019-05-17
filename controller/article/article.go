@@ -5,7 +5,7 @@ import (
   "model"
   "math"
   // "math/big"
-  // "util"
+  "util"
   "strconv"
   // "time"
 )
@@ -18,66 +18,40 @@ func Update(ctx *gin.Context){
 
 }
 
-func Delete (ctx *gin.Context){
+func Delete(ctx *gin.Context){
   id , err := strconv.Atoi(ctx.Param("id"))
+  sendError := func (){
+    util.Send(ctx,400,nil,"无效的参数：id")
+  }
   if err != nil || id < 0 {
-    ctx.JSON(400,gin.H{
-      "code":1,
-      "msg":"无效的参数：id",
-      "data":nil,
-    })
+    sendError()
     return
   }
-  model.InitDB()
   article := model.Article{
     ID:uint(id),
   }
- if model.DB.Delete(&article).Error != nil {
-    ctx.JSON(400 ,gin.H{
-      "code":1,
-      "msg":"无效的参数：id",
-      "data":nil,
-    })
- } else {
-  ctx.JSON(200 ,gin.H{
-    "code":0,
-    "msg":"成功",
-    "data":nil,
-  })
- }
+  if model.DB.Delete(&article).Error != nil {
+    sendError()
+  } else {
+    util.Send(ctx)
+  }
 }
 
 func FindById(ctx *gin.Context){
   id , err  := strconv.Atoi(ctx.Param("id"))
   if err != nil || id < 0 {
-    ctx.JSON(400,gin.H{
-      "code":1,
-      "msg":"无效的参数：id",
-      "data":nil,
-    })
+    util.Send(ctx,400,nil,"无效的参数：id")
     return
   }
-  model.InitDB()
   article := model.Article{
     ID:uint(id),
   }
   if model.DB.Find(&article).Error != nil {
-    ctx.JSON(404 ,gin.H{
-      "code":1,
-      "msg":"失败",
-      "data":nil,
-    })
+    util.Send(ctx,404)
   } else {
-    ctx.JSON(200 ,gin.H{
-      "code":0,
-      "msg":"成功",
-      "data":article,
-    })
+    util.Send(ctx,article)
   }
 }
-
-
-
 
 func FindByPage(ctx *gin.Context){
   page , err  := strconv.Atoi(ctx.Param("page"))
@@ -88,22 +62,18 @@ func FindByPage(ctx *gin.Context){
   var offset int = (page - 1) * size
   var articles []model.Article
   var dataCount int = 0
-  model.InitDB()
   model.DB.Model(&model.Article{}).Count(&dataCount)
   var pageCount = int(math.Ceil(float64(dataCount) / float64(size)))
   if page > pageCount {
     page = pageCount
+    offset = (page - 1) * size
   }
   model.DB.Offset(offset).Limit(size).Find(&articles)
-  ctx.JSON(200,gin.H{
-    "code":0,
-    "msg" :"成功",
-    "data": map[string]interface{} {
-      "list":articles,
-      "pageIndex":page,
-      "pageSize":size,
-      "pageCount":pageCount,
-      "dataCount":dataCount,
-    },
+  util.Send(ctx, map[string]interface{} {
+    "list":articles,
+    "pageIndex":page,
+    "pageSize":size,
+    "pageCount":pageCount,
+    "dataCount":dataCount,
   })
 }
