@@ -54,20 +54,19 @@ func FindById(ctx *gin.Context){
 }
 
 func FindByPage(ctx *gin.Context){
-  page , err  := strconv.Atoi(ctx.Param("page"))
+  page, err  := strconv.Atoi(ctx.Param("page"))
+  var articles []model.Article
+  var dataCount int = 0
+  var size int = 10
+  model.DB.Model(&model.Article{}).Count(&dataCount)
+  var pageCount = int(math.Ceil(float64(dataCount) / float64(size)))
   if err != nil || page < 1 {
     page = 1
   }
-  var size int = 10
-  var offset int = (page - 1) * size
-  var articles []model.Article
-  var dataCount int = 0
-  model.DB.Model(&model.Article{}).Count(&dataCount)
-  var pageCount = int(math.Ceil(float64(dataCount) / float64(size)))
   if page > pageCount {
     page = pageCount
-    offset = (page - 1) * size
   }
+  var offset int = (page - 1) * size
   model.DB.Offset(offset).Limit(size).Find(&articles)
   util.Send(ctx, map[string]interface{} {
     "list":articles,
