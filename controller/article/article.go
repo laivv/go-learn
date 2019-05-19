@@ -11,10 +11,24 @@ import (
 )
 
 func Add (ctx *gin.Context){
-  // util.Log("aaaa")
+  var article model.Article
+  if err := ctx.ShouldBindJSON(&article) ; err != nil {
+    util.Send(ctx,400)
+    return
+  }
+  if er := model.DB.Create(&article).Error ; er != nil {
+    util.Send(ctx,500)
+  } else {
+    util.Send(ctx)
+  }
 }
 
 func Update(ctx *gin.Context){
+  var article model.Article
+  if err := ctx.ShouldBindJSON(&article) ; err != nil {
+    util.Send(ctx,400)
+    return
+  }
 
 }
 

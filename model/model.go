@@ -30,8 +30,8 @@ func init() {
 
 type Article struct {
    ID uint `json:"id"`
-	 Title string `json:"title"`
-	 Content string `json:"content"`
+	 Title string `form:"title" binding:"required" json:"title"`
+	 Content string `form:"content" binding:"required" json:"content"`
 	 CategoryId uint `json:"categoryId"`
 	 CreateDate string `gorm:"TYPE:DATETIME" json:"createDate"`
 	 UpdateDate string `json:"updateDate"`
