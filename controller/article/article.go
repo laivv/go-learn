@@ -10,7 +10,7 @@ import (
   // "time"
 )
 
-func Add (ctx *gin.Context){
+func Add(ctx *gin.Context){
   var article model.Article
   if err := ctx.ShouldBindJSON(&article) ; err != nil {
     util.Send(ctx,400)
@@ -29,7 +29,11 @@ func Update(ctx *gin.Context){
     util.Send(ctx,400)
     return
   }
-
+ if er := model.DB.Update(&article) ; er != nil {
+   util.Send(ctx,500)
+ } else {
+   util.Send(ctx)
+ }
 }
 
 func Delete(ctx *gin.Context){
@@ -89,4 +93,11 @@ func FindByPage(ctx *gin.Context){
     "pageCount":pageCount,
     "dataCount":dataCount,
   })
+}
+
+func FindByCategory(ctx *gin.Context){
+  _,err := strconv.Atoi(ctx.Param("id"))
+  if err != nil {
+    util.Send(ctx,400)
+  }
 }

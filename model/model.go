@@ -45,6 +45,10 @@ type Article struct {
 	 ReminderKey string `json:"reminderKey"`
 }
 
+type Comment struct {
+  ID uint `json:id`
+}
+
 type User struct {
   ID uint `json:"id"`
 	Account string `json:"account"`
